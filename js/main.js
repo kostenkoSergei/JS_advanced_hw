@@ -76,10 +76,16 @@ class Hamburger {
     }
 
     addTopping(topping) {
-        this.stuffing.push(topping);
-        this.totalPrice = 0;
-        this.totalCalories = 0;
-        this._renderOrder();
+        if (this.stuffing.includes(topping)) {
+            console.log('Такая добавка уже была учтена')
+        }
+        else {
+            this.stuffing.push(topping);
+            this.totalPrice = 0;
+            this.totalCalories = 0;
+            this._renderOrder();
+        }
+
     };
 
     getMayonnaise() {
@@ -90,10 +96,16 @@ class Hamburger {
     }
 
     removeTopping(topping) {
-        this.stuffing.splice(this.stuffing.indexOf(topping), 1);
-        this.totalPrice = 0;
-        this.totalCalories = 0;
-        this._renderOrder();
+        if (this.stuffing.includes(topping)) {
+            this.stuffing.splice(this.stuffing.indexOf(topping), 1);
+            this.totalPrice = 0;
+            this.totalCalories = 0;
+            this._renderOrder();
+        }
+        else {
+            console.log('Такой добавки не было в заказе')
+        }
+
     }
 
     getStuffing() {
@@ -132,3 +144,7 @@ smallHamburger.getMayonnaise(); // добавляем майонез
 console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
 console.log(smallHamburger.calculatePrice());
 console.log(smallHamburger.calculateCalories());
+smallHamburger.addTopping('salad'); // добавляем повторно уже добавленное
+console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
+smallHamburger.removeTopping('potato'); // пробуем удалить то, чего нет (удалено ранее)
+
