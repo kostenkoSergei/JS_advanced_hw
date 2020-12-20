@@ -235,4 +235,10 @@ console.log(smallHamburger.calculateCalories());
 smallHamburger.addTopping('salad'); // добавляем повторно уже добавленное
 console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
 smallHamburger.removeTopping('potato'); // пробуем удалить то, чего нет (удалено ранее)
-
+bigHamburger.addTopping('salad');
+console.log(bigHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
+console.log(bigHamburger.calculatePrice());
+console.log(bigHamburger.calculateCalories());
+bigHamburger.getMayonnaise();
+console.log(bigHamburger.calculatePrice());
+console.log(bigHamburger.calculateCalories());
