@@ -1,244 +1,164 @@
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+
 class ProductsList {
     constructor(container = '.products') {
         this.container = container;
-        this.goods = [];//массив товаров
-        //        this.allProducts=[];//массив объектов
-        this._fetchProducts();
-    }
-    _fetchProducts() {
-        this.goods = [
-            { id: 1, title: 'Notebook', price: 2000 },
-            { id: 2, title: 'Mouse', price: 20 },
-            { id: 3, title: 'Keyboard', price: 200 },
-            { id: 4, title: 'Gamepad', price: 50 },
-        ];
+        this.goods = [];// массив товаров
+        this.allProducts = [];// массив объектов
+        this._getProducts()
+            .then(data => { // data - объект js
+                this.goods = [...data];
+                this.render()
+            });
     }
 
-    /*
-    2. Добавьте для GoodsList метод, определяющий суммарную стоимость всех товаров.
-     */
-    getTotalPrice() {
-        return `Суммарная стоимость всех товаров: ${this.goods.reduce((acc, currentValue) => acc + currentValue.price, 0)}`
+    _getProducts() {
+        return fetch(`${API}/catalogData.json`)
+            .then(result => result.json())
+            .catch(error => {
+                console.log(error);
+            })
+    }
+    calcSum() {
+        return this.allProducts.reduce((accum, item) => accum += item.price, 0);
+    }
+    render() {
+        const block = document.querySelector(this.container);
+        for (let product of this.goods) {
+            const productObj = new ProductItem(product);
+            this.allProducts.push(productObj);
+            block.insertAdjacentHTML('beforeend', productObj.render());
+        }
+
+    }
+}
+
+
+class ProductItem {
+    constructor(product, img = 'https://placehold.it/200x150') {
+        this.title = product.product_name;
+        this.price = product.price;
+        this.id = product.id_product;
+        this.img = img;
+    }
+    render() {
+        return `<div class="product-item" data-id="${this.id}">
+                <img src="${this.img}" alt="Some img">
+                <div class="desc">
+                    <h3>${this.title}</h3>
+                    <p>${this.price} $</p>
+                    <button class="buy-btn buy-btn-${this.id}" data-id="${this.id}">Купить</button>
+                </div>
+            </div>`
+    }
+}
+
+let list = new ProductsList();
+
+
+class Basket {
+    constructor(container = '.basket-content') {
+        this.container = container;
+        this.goods = [];// массив товаров корзины
+        this.allProducts = [];// массив объектов корзины
+        this._getBasket()
+            .then(data => { // data - объект js
+                this.goods = [...data.contents];
+                this.render();
+            });
+    }
+
+    _getBasket() {
+        return fetch(`${API}/getBasket.json`)
+            .then(result => result.json())
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    // универсальный листенер для кнопок увеличения/уменьшения кол-ва товара в корзине
+    _changeAmountListener(event, sign) {
+        this.goods.forEach(el => {
+            if (el.id_product == event.target.productId.id) {
+                (sign == "+") ? el.quantity += 1 : el.quantity -= 1;
+                if (el.quantity < 1) {
+                    this.goods.splice(this.goods.indexOf(this.goods.find(el => el.quantity == 0)), 1);
+                }
+            }
+            this.render();
+        })
+    }
+
+    _addFromCatalogListener(event) {
+        let basketItemIndex = this.goods.indexOf(this.goods.find(el => el.id_product == event.target.dataset.id));
+        if (basketItemIndex !== -1) {
+            this.goods[basketItemIndex].quantity += 1;
+            this.render()
+        }
     }
 
 
     render() {
         const block = document.querySelector(this.container);
+        console.log(block.innerHTML);
+
+        block.innerHTML = 'hello';
+
+        console.log(block.innerHTML);
         for (let product of this.goods) {
-            const productObject = new ProductItem(product);
-            block.insertAdjacentHTML('beforeend', productObject.render());
+            const basketObj = new BasketItem(product);
+            this.allProducts.push(basketObj);
+            block.insertAdjacentHTML('beforeend', basketObj.render());
+
+            // кнопка увеличения кол-ва определенного товара в корзине
+            let addAmountBtn = document.querySelector(`.add-btn-${basketObj.id}`);
+            addAmountBtn.productId = basketObj;
+            addAmountBtn.addEventListener('click', event => this._changeAmountListener(event, "+"))
+
+            // кнопка уменьшения кол-ва определенного товара в корзине
+            let subAmountBtn = document.querySelector(`.sub-btn-${basketObj.id}`);
+            subAmountBtn.productId = basketObj;
+            subAmountBtn.addEventListener('click', event => { this._changeAmountListener(event, "-") })
+
+            // кнопка удаления товара из корзины
+            let delFromBasketBtn = document.querySelector(`.del-btn-${basketObj.id}`);
+            delFromBasketBtn.productId = basketObj;
+            delFromBasketBtn.addEventListener('click', event => {
+                this.goods.splice(this.goods.indexOf(this.goods.find(el => el.id_product == event.target.productId.id)), 1);
+                this.render();
+            })
+
+            // кнопка добавления товара из каталога в корзину
+            let addToBasketBtn = document.querySelector(`.buy-btn-${basketObj.id}`);
+            // addToBasketBtn.addEventListener('click', event => this._addFromCatalogListener(event))
+            addToBasketBtn.onclick = event => this._addFromCatalogListener(event);
+
         }
     }
 }
 
-class ProductItem {
-    constructor(product, img = 'https://placehold.it/200x150') {
-        this.title = product.title;
+class BasketItem {
+    constructor(product, img = 'https://placehold.it/50x70') {
+        this.title = product.product_name;
         this.price = product.price;
-        this.id = product.id;
+        this.id = product.id_product;
         this.img = img;
+        this.quantity = product.quantity;
     }
+
     render() {
-        return `<div class="product-item">
-                <img src="${this.img}">
-                <h3>${this.title}</h3>
-                <p>${this.price}</p>
-                <button class="buy-btn">Купить</button>
-            </div>`
-    }
-}
-
-/*
-1. Добавьте пустые классы для корзины товаров и элемента корзины товаров. Продумайте, какие методы 
-понадобятся для работы с этими сущностями.
- */
-class Basket {
-    constructor() {
-
-    };
-
-    // внешний вид корзины
-    render() {
-
-    };
-
-    // для удаления продукта из корзины
-    removeItem() {
-
-    }
-
-    // для применения промокода
-    getPromo() {
-
-    }
-
-    // подсчет полной стоимости корзины
-    getTotalPrice() {
-
-    }
-}
-
-class BasketItem extends ProductItem {
-    /*
-    При создании экземпляра класса BasketItem по умолчанию будет вызван конструктор базового класса ProductItem, 
-    поэтому в явном виде пока не прописываем
-     */
-
-    // для отрисовки продукта в корзине 
-    render() {
-        super.render();
-    }
-
-    // для увеличения кол-ва конкретного товара в корзине
-    addItemAmount() {
-
-    }
-
-    // для уменьшения кол-ва конкретного товара в корзине
-    subItemAmount() {
-
+        return `<li class="item-list list-group-item">
+                    <img src="${this.img}" alt="Some img">
+                    <div>Товар: ${this.title} | Цена: ${this.price} | Количество: ${this.quantity}</div>
+                    <div>
+                    <button type="button"  class="btn btn-secondary add-btn-${this.id}">+1</button>
+                    <button type="button"  class="btn btn-primary del-btn-${this.id}">Удалить</button>
+                    <button type="button"  class="btn btn-secondary sub-btn-${this.id}">-1</button>
+                    </div>
+                </li>`
     }
 
 }
 
-
-
-let list = new ProductsList();
-list.render();
-console.log(list.getTotalPrice());
-
-
-/*
-3. *Некая сеть фастфуда предлагает несколько видов гамбургеров:
-### Маленький (50 рублей, 20 калорий).
-### Большой (100 рублей, 40 калорий). ### Гамбургер может быть с одним из нескольких видов начинок (обязательно):
-### С сыром (+10 рублей, +20 калорий).
-### С салатом (+20 рублей, +5 калорий).
-### С картофелем (+15 рублей, +10 калорий). ### Дополнительно гамбургер можно посыпать приправой (+15 рублей, +0 калорий) 
-и полить майонезом (+20 рублей, +5 калорий). ### 3Напишите программу, рассчитывающую стоимость и калорийность гамбургера. 
-Можно использовать примерную архитектуру класса из методички, но можно использовать и свою
-class Hamburger {
-  constructor(size, stuffing) { ... }
-  addTopping(topping) {    // Добавить добавку }
-  removeTopping(topping) { // Убрать добавку }
-  getToppings(topping) {   // Получить список добавок }
-  getSize() {              // Узнать размер гамбургера }
-  getStuffing() {          // Узнать начинку гамбургера }
-  calculatePrice() {       // Узнать цену }
-  calculateCalories() {    // Узнать калорийность }
-}
- */
-
-class Hamburger {
-    static stuffings = {
-        cheese: { price: 10, calories: 20 },
-        salad: { price: 20, calories: 5 },
-        potato: { price: 15, calories: 10 },
-        mayonnaise: { price: 20, calories: 5 },
-    };
-
-    static getToppings() {
-        return `Доступные к заказу добавки: ${Object.keys(Hamburger.stuffings)}`;
-    };
-
-    constructor(size, stuffing) {
-        this.size = size;
-        this.stuffing = [stuffing]; // список добавок для данного экземпляра класса
-        if (size == 'small') {
-            this.initialPrice = 50;
-            this.initialCalories = 20;
-        };
-        if (size == 'big') {
-            this.initialPrice = 100;
-            this.initialCalories = 40;
-        };
-        this.totalPrice = 0;
-        this.totalCalories = 0;
-    }
-
-    _renderOrder() {
-        this.stuffing.forEach(el => {
-            this.totalPrice += Hamburger.stuffings[el].price;
-            this.totalCalories += Hamburger.stuffings[el].calories;
-        });
-    }
-
-    addTopping(topping) {
-        if (this.stuffing.includes(topping)) {
-            console.log('Такая добавка уже была учтена')
-        }
-        else {
-            this.stuffing.push(topping);
-            this.totalPrice = 0;
-            this.totalCalories = 0;
-            this._renderOrder();
-        }
-
-    };
-
-    getMayonnaise() {
-        this.stuffing.push('mayonnaise');
-        this.totalPrice = 0;
-        this.totalCalories = 0;
-        this._renderOrder();
-    }
-
-    removeTopping(topping) {
-        if (this.stuffing.includes(topping)) {
-            this.stuffing.splice(this.stuffing.indexOf(topping), 1);
-            this.totalPrice = 0;
-            this.totalCalories = 0;
-            this._renderOrder();
-        }
-        else {
-            console.log('Такой добавки не было в заказе')
-        }
-
-    }
-
-    getStuffing() {
-        return `На данный момент добавлены: ${this.stuffing}`;
-    }
-
-    calculatePrice() {
-        return `${this.getStuffing()}. Цена гамбургера составляет: ${this.totalPrice + this.initialPrice} рублей`
-    }
-
-    calculateCalories() {
-        return `${this.getStuffing()}. Калорийность составляет: ${this.totalCalories + this.initialCalories} калорий`
-    }
-
-    getSize() {
-        return `Размер гамбургера: ${this.size}`;
-    }
-}
-
-console.log(Hamburger.getToppings()); // получаем список возможных добавок
-let smallHamburger = new Hamburger('small', 'cheese');
-console.log(smallHamburger.calculatePrice());
-let bigHamburger = new Hamburger('big', 'potato');
-console.log(bigHamburger.calculatePrice());
-smallHamburger.addTopping('salad');
-smallHamburger.addTopping('potato');
-console.log(smallHamburger.getSize());
-console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
-console.log(smallHamburger.calculatePrice());
-console.log(smallHamburger.calculateCalories());
-smallHamburger.removeTopping('potato'); // удаляем добавку
-console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
-console.log(smallHamburger.calculatePrice());
-console.log(smallHamburger.calculateCalories());
-smallHamburger.getMayonnaise(); // добавляем майонез
-console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
-console.log(smallHamburger.calculatePrice());
-console.log(smallHamburger.calculateCalories());
-smallHamburger.addTopping('salad'); // добавляем повторно уже добавленное
-console.log(smallHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
-smallHamburger.removeTopping('potato'); // пробуем удалить то, чего нет (удалено ранее)
-bigHamburger.addTopping('salad');
-console.log(bigHamburger.getStuffing()); // смотрим, что добавлено на текущий момент
-console.log(bigHamburger.calculatePrice());
-console.log(bigHamburger.calculateCalories());
-bigHamburger.getMayonnaise();
-console.log(bigHamburger.calculatePrice());
-console.log(bigHamburger.calculateCalories());
+let userBasket = new Basket();

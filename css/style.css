@@ -75,3 +75,18 @@ img {
     border-color: #2f2a2d;
     color: #2f2a2d;
 }
+
+.item-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.basket{
+    max-width: 700px;
+}
