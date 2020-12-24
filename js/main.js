@@ -29,6 +29,8 @@ class ProductsList {
             const productObj = new ProductItem(product);
             this.allProducts.push(productObj);
             block.insertAdjacentHTML('beforeend', productObj.render());
+            let addToBasketBtn = document.querySelector(`.buy-btn-${productObj.id}`);
+            addToBasketBtn.productId = productObj; // привязываем к кнопке продукт каталога
         }
 
     }
@@ -61,13 +63,13 @@ class Basket {
     constructor(container = '.basket-content') {
         this.container = container;
         this.goods = [];// массив товаров корзины
-        this.allProducts = [];// массив объектов корзины
         this._getBasket()
             .then(data => { // data - объект js
                 this.goods = [...data.contents];
                 this.render();
             });
     }
+
 
     _getBasket() {
         return fetch(`${API}/getBasket.json`)
@@ -90,44 +92,53 @@ class Basket {
         })
     }
 
+    // листенер для добавления товара из каталога в корзину
     _addFromCatalogListener(event) {
         let basketItemIndex = this.goods.indexOf(this.goods.find(el => el.id_product == event.target.dataset.id));
         if (basketItemIndex !== -1) {
             this.goods[basketItemIndex].quantity += 1;
-            this.render()
+        } else {
+            let itemToBasket = event.target.productId;
+            this.goods.push({
+                "id_product": itemToBasket.id,
+                "product_name": itemToBasket.title,
+                "price": itemToBasket.price,
+                "quantity": 1
+            })
         }
+        this.render();
     }
 
+    calcSumBasket() {
+        return this.goods.reduce((accum, item) => accum += item.price * item.quantity, 0);
+    }
 
     render() {
+
         const block = document.querySelector(this.container);
-        console.log(block.innerHTML);
+        block.innerHTML = '';
 
-        block.innerHTML = 'hello';
-
-        console.log(block.innerHTML);
         for (let product of this.goods) {
             const basketObj = new BasketItem(product);
-            this.allProducts.push(basketObj);
             block.insertAdjacentHTML('beforeend', basketObj.render());
 
             // кнопка увеличения кол-ва определенного товара в корзине
             let addAmountBtn = document.querySelector(`.add-btn-${basketObj.id}`);
-            addAmountBtn.productId = basketObj;
-            addAmountBtn.addEventListener('click', event => this._changeAmountListener(event, "+"))
+            addAmountBtn.productId = basketObj; // привязываем к кнопке продукт корзины
+            addAmountBtn.onclick = event => this._changeAmountListener(event, "+");
 
             // кнопка уменьшения кол-ва определенного товара в корзине
             let subAmountBtn = document.querySelector(`.sub-btn-${basketObj.id}`);
             subAmountBtn.productId = basketObj;
-            subAmountBtn.addEventListener('click', event => { this._changeAmountListener(event, "-") })
+            subAmountBtn.onclick = event => this._changeAmountListener(event, "-");
 
             // кнопка удаления товара из корзины
             let delFromBasketBtn = document.querySelector(`.del-btn-${basketObj.id}`);
             delFromBasketBtn.productId = basketObj;
-            delFromBasketBtn.addEventListener('click', event => {
+            delFromBasketBtn.onclick = event => {
                 this.goods.splice(this.goods.indexOf(this.goods.find(el => el.id_product == event.target.productId.id)), 1);
                 this.render();
-            })
+            }
 
             // кнопка добавления товара из каталога в корзину
             let addToBasketBtn = document.querySelector(`.buy-btn-${basketObj.id}`);
@@ -135,11 +146,15 @@ class Basket {
             addToBasketBtn.onclick = event => this._addFromCatalogListener(event);
 
         }
+        //const calcBasketBtn = document.querySelector('.btn-calc');
+        const calcText = document.querySelector('.basket-text')
+        //calcBasketBtn.onclick = () => calcText.innerHTML = `${this.calcSumBasket()}`
+        calcText.innerHTML = `Суммарная стоимость товаров в корзине: ${this.calcSumBasket()} $`
     }
 }
 
 class BasketItem {
-    constructor(product, img = 'https://placehold.it/50x70') {
+    constructor(product, img = 'https://placehold.it/70x90') {
         this.title = product.product_name;
         this.price = product.price;
         this.id = product.id_product;
@@ -150,7 +165,7 @@ class BasketItem {
     render() {
         return `<li class="item-list list-group-item">
                     <img src="${this.img}" alt="Some img">
-                    <div>Товар: ${this.title} | Цена: ${this.price} | Количество: ${this.quantity}</div>
+                    <div>Товар: ${this.title} | Цена: ${this.price} $ | Количество: ${this.quantity} шт.</div>
                     <div>
                     <button type="button"  class="btn btn-secondary add-btn-${this.id}">+1</button>
                     <button type="button"  class="btn btn-primary del-btn-${this.id}">Удалить</button>
