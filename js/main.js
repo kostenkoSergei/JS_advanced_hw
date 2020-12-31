@@ -31,7 +31,6 @@ const app = new Vue({
                         let find = this.basket.find(product => product.id_product === productId);
                         if (find) {
                             find.quantity++;
-                            //this._updateCart(find);
                         } else {
                             let basketProduct = {
                                 id_product: productId,
