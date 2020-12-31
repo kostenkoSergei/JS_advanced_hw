@@ -4,9 +4,12 @@ const app = new Vue({
     el: '#app',
     data: {
         catalogUrl: '/catalogData.json',
+        basketUrl: '/getBasket.json',
         products: [],
+        basket: [],
         filtered: [],
         imgCatalog: 'https://placehold.it/200x150',
+        imgBasket: 'https://placehold.it/50x100',
 
         userSearch: '',
 
@@ -21,7 +24,43 @@ const app = new Vue({
                 })
         },
         addProduct(product) {
-            console.log(product.id_product);
+            this.getJson(`${API}/addToBasket.json`)
+                .then(data => {
+                    if (data.result === 1) {
+                        let productId = product.id_product;
+                        let find = this.basket.find(product => product.id_product === productId);
+                        if (find) {
+                            find.quantity++;
+                            //this._updateCart(find);
+                        } else {
+                            let basketProduct = {
+                                id_product: productId,
+                                price: product.price,
+                                product_name: product.product_name,
+                                quantity: 1
+                            };
+                            this.basket.push(basketProduct);
+                        }
+                    } else {
+                        alert('Error');
+                    }
+                })
+        },
+        removeProduct(product) {
+            this.getJson(`${API}/deleteFromBasket.json`)
+                .then(data => {
+                    if (data.result === 1) {
+                        let productId = product.id_product;
+                        let find = this.basket.find(product => product.id_product === productId);
+                        if (find.quantity > 1) {
+                            find.quantity--;
+                        } else {
+                            this.basket.splice(this.basket.indexOf(find), 1);
+                        }
+                    } else {
+                        alert('Error');
+                    }
+                })
         },
         filter() {
             const regexp = new RegExp(this.userSearch, 'i');
@@ -34,6 +73,10 @@ const app = new Vue({
                     block.classList.remove('invisible');
                 }
             })
+        },
+        showBasket() {
+            const cart = document.querySelector('.cart-block');
+            cart.classList.toggle('invisible');
         }
     },
     mounted() {
@@ -48,7 +91,14 @@ const app = new Vue({
                 for (let el of data) {
                     this.products.push(el);
                 }
-            })
+            });
+        // получаем содержимое корзны с сервера
+        this.getJson(`${API + this.basketUrl}`)
+            .then(data => {
+                for (let el of data.contents) {
+                    this.basket.push(el);
+                }
+            });
     }
 })
 
