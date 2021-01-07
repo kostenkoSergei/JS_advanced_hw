@@ -551,6 +551,10 @@ textarea.input {
   padding-bottom: 15px;
 }
 
+.invisible {
+  display: none;
+}
+
 /*----------------------------*\
 	Widget product
 \*----------------------------*/
