@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Интернет-магазин</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+
+</head>
+
+<body>
+	<div id="app">
+		<!-- HEADER -->
+		<header>
+			<!-- TOP HEADER -->
+			<div id="top-header">
+				<div class="container">
+					<ul class="header-links pull-left">
+						<li><a href="#"><i class="fa fa-phone"></i> +7921-388-69-96</a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i> s_kostenko@mail.ru</a></li>
+						<li><a href="#"><i class="fa fa-map-marker"></i> Санкт-Петербург 163170</a></li>
+					</ul>
+					<ul class="header-links pull-right">
+						<li><a href="#"><i class="fa fa-rub"></i> RUB</a></li>
+						<li><a href="#"><i class="fa fa-user-o"></i> Личный кабинет</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /TOP HEADER -->
+
+			<!-- MAIN HEADER -->
+			<div id="header">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<!-- LOGO -->
+						<div class="col-md-3">
+							<div class="header-logo">
+								<a href="#" class="logo">
+									<img src="./img/logo1.png" alt="">
+								</a>
+							</div>
+						</div>
+						<!-- /LOGO -->
+
+						<!-- SEARCH BAR -->
+						<div class="col-md-6">
+							<div class="header-search">
+								<form>
+									<input type="text" class="search-field" v-model="userSearch" @input="filter">
+									<button class="search-btn">Поиск</button>
+								</form>
+							</div>
+						</div>
+						<!-- /SEARCH BAR -->
+
+						<!-- ACCOUNT -->
+						<div class="col-md-3 clearfix">
+							<div class="header-ctn">
+								<!-- Wishlist -->
+								<div>
+									<a @click="showFavorites">
+										<i class="fa fa-heart-o"></i>
+										<span class="fa-text">Избранное</span>
+									</a>
+								</div>
+								<!-- /Wishlist -->
+
+								<!-- Cart -->
+								<div>
+									<a @click="showBasket">
+										<i class="fa fa-shopping-cart"></i>
+										<span class="fa-text">Корзина</span>
+									</a>
+									<div class="cart">
+										<div class="cart-dropdown invisible">
+											<div class="cart-list">
+												<p v-if="!basket.length"><strong>Нет данных. Корзина пуста</strong> </p>
+												<div v-for="product of basket" :key="product.id_product"
+													:data-id="product.id_product">
+													<div class="product-widget">
+														<div class="product-img">
+															<img :src="imgBasket" alt="Some img">
+														</div>
+														<div class="product-body">
+															<h4 class="product-name"><a
+																	href="#">{{product.product_name}}</a></h4>
+															<h5 class="product-price"><span
+																	class="qty">{{product.quantity}}
+																	шт.&nbsp</span>&nbsp{{product.price}} &#8381/шт.
+															</h5>
+														</div>
+														<button class="delete" :data-id="product.id_product"
+															@click="removeProduct(product)"><i
+																class="fa fa-close"></i></button>
+
+													</div>
+												</div>
+
+												<div class="cart-summary">
+													<small>В корзине {{calcBasket[1]}} ед. товара</small>
+													<h5>Сумма заказа: {{calcBasket[0]}} &#8381</h5>
+												</div>
+												<div class="cart-btns">
+													<a href="#">View Cart</a>
+													<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+									<!-- /Cart -->
+
+									<!-- Menu Toogle -->
+									<div class="menu-toggle">
+										<a href="#">
+											<i class="fa fa-bars"></i>
+											<span>Menu</span>
+										</a>
+									</div>
+									<!-- /Menu Toogle -->
+								</div>
+							</div>
+							<!-- /ACCOUNT -->
+						</div>
+						<!-- row -->
+					</div>
+					<!-- container -->
+				</div>
+				<!-- /MAIN HEADER -->
+		</header>
+		<!-- /HEADER -->
+
+		<!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
+		<!-- /NAVIGATION -->
+
+
+		<!-- Section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-12">
+						<div class="section-title text-center">
+							<h3 class="title">Каталог</h3>
+						</div>
+					</div>
+
+					<div class="clearfix visible-sm visible-xs"></div>
+
+					<!-- geekbrains product -->
+					<div class="products">
+						<div class="product-item" v-for="product of products" :key="product.id_product"
+							:data-id="product.id_product">
+							<div class="col-md-3 col-xs-6">
+								<div class="product">
+									<div class="product-img">
+										<img :src="imgCatalog" alt="Some img">
+									</div>
+									<div class="product-body">
+										<p class="product-category">Оргтехника</p>
+										<h3 class="product-name"><a href="#">{{product.product_name}}</a></h3>
+										<h4 class="product-price">{{product.price}} &#8381</h4>
+										<div class="product-btns">
+											<button @click="addFavorite(product)" class="add-to-wishlist"><i
+													class="fa fa-heart-o"></i><span class="tooltipp">В
+													избранное</span></button>
+											<button class="add-to-compare"><i class="fa fa-exchange"></i><span
+													class="tooltipp">К сравнению</span></button>
+											<button class="quick-view"><i class="fa fa-eye"></i><span
+													class="tooltipp">Просмотр</span></button>
+										</div>
+									</div>
+									<div class="add-to-cart">
+										<button class="add-to-cart-btn" @click="addProduct(product)"><i
+												class="fa fa-shopping-cart"></i> Купить</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- geekbrains product -->
+
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /Section -->
+
+		<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="newsletter">
+							<p>Подпишись на <strong>Рассылку</strong></p>
+							<form>
+								<input :class="{error: isError}" class="input" type="email" :placeholder="placeholder"
+									v-model="userEmail">
+								<button class="newsletter-btn" @click="checkEmail"><i class="fa fa-envelope"></i>
+									Подписаться</button>
+							</form>
+							<ul class="newsletter-follow">
+								<li>
+									<a href="#"><i class="fa fa-facebook"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-twitter"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-instagram"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-pinterest"></i></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /NEWSLETTER -->
+
+		<!-- FOOTER -->
+		<footer id="footer">
+			<!-- top footer -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="footer-info">
+							<div class="footer">
+								<h3 class="footer-title">О нас</h3>
+								<p>Страница интернет-магазина является домашним заданием к 8 уроку курса Продвинутый JS
+									GeekBrains</p>
+								<ul class="footer-links">
+									<li><a href="#"><i class="fa fa-phone"></i> +7921-388-69-96</a></li>
+									<li><a href="#"><i class="fa fa-envelope-o"></i> s_kostenko@mail.ru</a></li>
+									<li><a href="#"><i class="fa fa-map-marker"></i> Санкт-Петербург 163170</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+
+			<!-- favorites -->
+			<div class="popup">
+				<div class="popup__body">
+					<div class="popup__content">
+						<p v-if="!favorites.length"><strong>В избранном нет товаров</strong> </p>
+						<div v-else class="favorite-list">
+							<div v-for="product of favorites" :key="product.id_product" :data-id="product.id_product">
+								<div class="card" style="width: 18rem; margin: 5px;">
+									<img :src="imgCatalog" class="card-img-top" alt="Some img">
+									<div class="card-body">
+										<h5 class="card-title">{{product.product_name}}</h5>
+										<p class="card-text">{{product.price}} &#8381</p>
+										<div class="favorite-btns">
+											<a @click="addProduct(product)" class="btn btn-info btn-sm">Купить</a>
+											<a @click="removeFavorite(product)" class="btn btn-danger btn-sm">Удалить</a>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<button @click="showFavorites" type="button" class="btn btn-info" style="margin: 5px;">Закрыть
+							избранное</button>
+					</div>
+
+				</div>
+			</div>
+			<!-- favorites -->
+	</div>
+	<!-- /top footer -->
+
+	<!-- bottom footer -->
+	<div id="bottom-footer" class="section">
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<ul class="footer-payments">
+						<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+						<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+						<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+					</ul>
+					<span class="copyright">
+						Copyright &copy;
+						<script>document.write(new Date().getFullYear());</script> Все права защищены
+					</span>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /bottom footer -->
+	</footer>
+	<!-- /FOOTER -->
+
+
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>
