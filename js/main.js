@@ -1,3 +1,24 @@
+Vue.component('product-search', {
+    data() {
+        return {
+            searchValue: ''
+        }
+    },
+    template: `
+    <div class="col-md-6">
+    <div class="header-search">
+        <form onsubmit="return false">
+            <input type="text" class="search-field" v-model="searchValue" @input="$emit('product-search', searchValue)">
+            <button class="search-btn" @click="$emit('product-search', searchValue)">Поиск</button>
+        </form>
+    </div>
+</div>
+    `
+});
+
+
+
+
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
 const app = new Vue({
@@ -12,7 +33,7 @@ const app = new Vue({
         imgCatalog: 'https://placehold.it/200x150',
         imgBasket: 'https://placehold.it/100x100',
 
-        userSearch: '',
+        // userSearch: '',
         userEmail: '',
         placeholder: 'Введите Вашу почту',
         isError: false
@@ -89,8 +110,9 @@ const app = new Vue({
             this.favorites.splice(this.basket.indexOf(find), 1);
 
         },
-        filter() {
-            const regexp = new RegExp(this.userSearch, 'i');
+        filter(userSearch) {
+            // userSearch получаем из дочернего компонента через emit
+            const regexp = new RegExp(userSearch, 'i');
             this.filtered = this.products.filter(product => regexp.test(product.product_name));
             this.products.forEach(el => {
                 const block = document.querySelector(`.product-item[data-id="${el.id_product}"]`);
@@ -113,6 +135,9 @@ const app = new Vue({
             this.isError = false;
             const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             this.isError = !re.test(String(this.userEmail).toLowerCase())
+        },
+        sayhello() {
+            console.log('hello')
         }
     },
     mounted() {

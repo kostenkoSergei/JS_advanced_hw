@@ -62,14 +62,17 @@
 						<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
-						<div class="col-md-6">
+						<product-search v-on:product-search="filter"></product-search>
+
+
+						<!-- <div class="col-md-6">
 							<div class="header-search">
 								<form>
 									<input type="text" class="search-field" v-model="userSearch" @input="filter">
 									<button class="search-btn">Поиск</button>
 								</form>
 							</div>
-						</div>
+						</div> -->
 						<!-- /SEARCH BAR -->
 
 						<!-- ACCOUNT -->
@@ -305,7 +308,7 @@
 								</div>
 							</div>
 						</div>
-						<button @click="showFavorites" type="button" class="btn btn-info" style="margin: 5px;">Закрыть
+						<button @click="showFavorites" type="button" class="btn btn-info" style="margin: 5px 5px 5px 10px;">Закрыть
 							избранное</button>
 					</div>
 
