@@ -22,7 +22,6 @@
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
 
-
 </head>
 
 <body>
@@ -63,15 +62,6 @@
 
 						<!-- SEARCH BAR -->
 						<product-search v-on:product-search="filter">Поиск</product-search>
-
-						<!-- <div class="col-md-6">
-							<div class="header-search">
-								<form>
-									<input type="text" class="search-field" v-model="userSearch" @input="filter">
-									<button class="search-btn">Поиск</button>
-								</form>
-							</div>
-						</div> -->
 						<!-- /SEARCH BAR -->
 
 						<!-- ACCOUNT -->
@@ -146,43 +136,11 @@
 						</div>
 					</div>
 
-					<div class="clearfix visible-sm visible-xs"></div>
-
 					<!-- geekbrains product -->
-					<div class="products">
-						<div class="product-item" v-for="product of products" :key="product.id_product"
-							:data-id="product.id_product">
-							<div class="col-md-3 col-xs-6">
-								<div class="product">
-									<div class="product-img">
-										<img :src="imgCatalog" alt="Some img">
-									</div>
-									<div class="product-body">
-										<p class="product-category">Оргтехника</p>
-										<h3 class="product-name"><a href="#">{{product.product_name}}</a></h3>
-										<h4 class="product-price">{{product.price}} &#8381</h4>
-										<div class="product-btns">
-											<button @click="addFavorite(product)" class="add-to-wishlist"><i
-													class="fa fa-heart-o"></i><span class="tooltipp">В
-													избранное</span></button>
-											<button class="add-to-compare"><i class="fa fa-exchange"></i><span
-													class="tooltipp">К сравнению</span></button>
-											<button class="quick-view"><i class="fa fa-eye"></i><span
-													class="tooltipp">Просмотр</span></button>
-										</div>
-									</div>
-									<div class="add-to-cart">
-										<button class="add-to-cart-btn" @click="addProduct(product)"><i
-												class="fa fa-shopping-cart"></i> Купить</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-
+					<product-list class="products" :products="products" v-on:add-product="addProduct"
+						v-on:add-favorite="addFavorite">
+					</product-list>
 					<!-- geekbrains product -->
-
 
 				</div>
 				<!-- /row -->
@@ -240,7 +198,8 @@
 						<div class="footer-info">
 							<div class="footer">
 								<h3 class="footer-title">О нас</h3>
-								<p style="color: white;">Страница интернет-магазина является домашним заданием к 8 уроку курса Продвинутый JS
+								<p style="color: white;">Страница интернет-магазина является домашним заданием к 8 уроку
+									курса Продвинутый JS
 									GeekBrains</p>
 								<ul class="footer-links">
 									<li><a href="#"><i class="fa fa-phone"></i> +7921-388-69-96</a></li>
@@ -312,7 +271,6 @@
 	<!-- /bottom footer -->
 	</footer>
 	<!-- /FOOTER -->
-
 
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
