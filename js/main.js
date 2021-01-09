@@ -1,3 +1,4 @@
+// Компонент для поиска товара в каталоге ============================
 Vue.component('product-search', {
     data() {
         return {
@@ -9,14 +10,67 @@ Vue.component('product-search', {
     <div class="header-search">
         <form onsubmit="return false">
             <input type="text" class="search-field" v-model="searchValue" @input="$emit('product-search', searchValue)">
-            <button class="search-btn" @click="$emit('product-search', searchValue)">Поиск</button>
+            <button class="search-btn" @click="$emit('product-search', searchValue)"><slot></slot></button>
         </form>
     </div>
 </div>
     `
 });
+//====================================================================
 
+// Компоненты для построения корзины =================================
+Vue.component('basket-list', {
+    props: ['basket'],
+    computed: {
+        calcBasket: function () {
+            return [this.basket.reduce((acc, currentValue) => acc + currentValue.price * currentValue.quantity, 0),
+            this.basket.reduce((acc, currentValue) => acc + currentValue.quantity, 0)]
+        }
+    },
+    template: `
+      <div>
+        <p v-if="!basket.length"><strong>Нет данных. Корзина пуста</strong> </p>
+        <basket-item v-for="product of basket" :key="product.id_product"
+        :data-id="product.id_product" :product="product" v-on:remove-product="$emit('remove-product', product)"></basket-item>
+        <div class="cart-summary">
+            <small>В корзине {{calcBasket[1]}} ед. товара</small>
+            <h5>Сумма заказа: {{calcBasket[0]}} &#8381</h5>
+        </div>
+      </div>
+    `
+});
 
+Vue.component('basket-item', {
+    props: ['product'],
+    data() {
+        return {
+            imgBasket: 'https://placehold.it/100x100'
+        }
+    },
+    template: `
+      <div>
+        <div class="product-widget">
+            <div class="product-img">
+                <img :src="imgBasket" alt="Some img">
+            </div>
+            <div class="product-body">
+                <h4 class="product-name"><a
+                        href="#">{{product.product_name}}</a></h4>
+                <h5 class="product-price"><span
+                        class="qty">{{product.quantity}}
+                        шт.&nbsp</span>&nbsp{{product.price}} &#8381/шт.
+                </h5>
+            </div>
+            
+            <button class="delete" :data-id="product.id_product"
+            @click="$emit('remove-product', product)"><i
+                class="fa fa-close"></i></button>
+
+        </div>
+      </div>
+    `
+});
+//====================================================================
 
 
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
@@ -31,7 +85,7 @@ const app = new Vue({
         filtered: [],
         favorites: [],
         imgCatalog: 'https://placehold.it/200x150',
-        imgBasket: 'https://placehold.it/100x100',
+        // imgBasket: 'https://placehold.it/100x100',
 
         // userSearch: '',
         userEmail: '',
@@ -40,11 +94,6 @@ const app = new Vue({
 
 
     },
-    computed: {
-        calcBasket: function () {
-            return [this.basket.reduce((acc, currentValue) => acc + currentValue.price * currentValue.quantity, 0), this.basket.reduce((acc, currentValue) => acc + currentValue.quantity, 0)]
-        }
-    },
     methods: {
         getJson(url) {
             return fetch(url)
@@ -52,6 +101,9 @@ const app = new Vue({
                 .catch(error => {
                     console.log(error);
                 })
+        },
+        sayHello() {
+            console.log('hello')
         },
         addProduct(product) {
             this.getJson(`${API}/addToBasket.json`)
@@ -89,6 +141,7 @@ const app = new Vue({
 
         },
         removeProduct(product) {
+            console.log('hi')
             this.getJson(`${API}/deleteFromBasket.json`)
                 .then(data => {
                     if (data.result === 1) {

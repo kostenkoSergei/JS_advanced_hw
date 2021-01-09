@@ -62,8 +62,7 @@
 						<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
-						<product-search v-on:product-search="filter"></product-search>
-
+						<product-search v-on:product-search="filter">Поиск</product-search>
 
 						<!-- <div class="col-md-6">
 							<div class="header-search">
@@ -95,45 +94,15 @@
 									</a>
 									<div class="cart">
 										<div class="cart-dropdown invisible">
-											<div class="cart-list">
-												<p v-if="!basket.length"><strong>Нет данных. Корзина пуста</strong> </p>
-												<div v-for="product of basket" :key="product.id_product"
-													:data-id="product.id_product">
-													<div class="product-widget">
-														<div class="product-img">
-															<img :src="imgBasket" alt="Some img">
-														</div>
-														<div class="product-body">
-															<h4 class="product-name"><a
-																	href="#">{{product.product_name}}</a></h4>
-															<h5 class="product-price"><span
-																	class="qty">{{product.quantity}}
-																	шт.&nbsp</span>&nbsp{{product.price}} &#8381/шт.
-															</h5>
-														</div>
-														<button class="delete" :data-id="product.id_product"
-															@click="removeProduct(product)"><i
-																class="fa fa-close"></i></button>
-
-													</div>
-												</div>
-
-												<div class="cart-summary">
-													<small>В корзине {{calcBasket[1]}} ед. товара</small>
-													<h5>Сумма заказа: {{calcBasket[0]}} &#8381</h5>
-												</div>
-												<div class="cart-btns">
-													<a href="#">View Cart</a>
-													<a href="#">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-												</div>
-											</div>
-
+											<basket-list class="cart-list" :basket="basket"
+												v-on:remove-product="removeProduct">
+											</basket-list>
 										</div>
 
 									</div>
-									<!-- /Cart -->
-
 								</div>
+								<!-- /Cart -->
+
 							</div>
 							<!-- /ACCOUNT -->
 						</div>
@@ -308,7 +277,8 @@
 								</div>
 							</div>
 						</div>
-						<button @click="showFavorites" type="button" class="btn btn-info" style="margin: 5px 5px 5px 10px;">Закрыть
+						<button @click="showFavorites" type="button" class="btn btn-info"
+							style="margin: 5px 5px 5px 10px;">Закрыть
 							избранное</button>
 					</div>
 
