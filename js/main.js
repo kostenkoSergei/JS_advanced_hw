@@ -121,6 +121,24 @@ Vue.component('product-item', {
 });
 //====================================================================
 
+// Компонент сообщения об ошибке ===================================
+Vue.component('error-data', {
+    data() {
+        return {
+            errorMsg: 'Не удалось выполнить запрос к серверу'
+        }
+    },
+    template: `
+    <div class="col-md-12">
+        <div class="section-title text-center">
+            <h3 class="error-data">{{errorMsg}}</h3>
+        </div>
+    </div>
+    `
+});
+//====================================================================
+
+
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
 const app = new Vue({
@@ -137,7 +155,8 @@ const app = new Vue({
         // userSearch: '',
         userEmail: '',
         placeholder: 'Введите Вашу почту',
-        isError: false
+        isError: false,
+        dataError: false
 
 
     },
@@ -147,6 +166,7 @@ const app = new Vue({
                 .then(result => result.json())
                 .catch(error => {
                     console.log(error);
+                    this.dataError = true;
                 })
         },
         addProduct(product) {
