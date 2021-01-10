@@ -78,7 +78,8 @@ Vue.component('product-list', {
     template: `
     <div>
         <product-item class="product-item" v-for="product of products" :key="product.id_product"
-        :data-id="product.id_product" :product="product" v-on:add-product="$emit('add-product', product)" v-on:add-favorite="$emit('add-favorite', product)"></product-item>
+        :data-id="product.id_product" :product="product" v-on:add-product="$emit('add-product', product)" 
+        v-on:add-favorite="$emit('add-favorite', product)"></product-item>
     </div>
     `
 });
