@@ -84,11 +84,9 @@
 									</a>
 									<div class="cart">
 										<div class="cart-dropdown invisible">
-											<basket-list class="cart-list" :basket="basket"
-												v-on:remove-product="removeProduct">
-											</basket-list>
+											<basket :basket="basket" v-on:remove-product="removeProduct">
+											</basket>
 										</div>
-
 									</div>
 								</div>
 								<!-- /Cart -->
@@ -141,9 +139,9 @@
 					<!-- if server is unreachable -->
 
 					<!-- geekbrains product -->
-					<product-list class="products" :products="products" v-on:add-product="addProduct"
+					<products class="products" :products="products" v-on:add-product="addProduct"
 						v-on:add-favorite="addFavorite">
-					</product-list>
+					</products>
 					<!-- geekbrains product -->
 
 				</div>
@@ -202,7 +200,7 @@
 						<div class="footer-info">
 							<div class="footer">
 								<h3 class="footer-title">О нас</h3>
-								<p style="color: white;">Страница интернет-магазина является домашним заданием к 8 уроку
+								<p style="color: white;">Страница интернет-магазина является домашним заданием к 6 уроку
 									курса Продвинутый JS
 									GeekBrains</p>
 								<ul class="footer-links">
@@ -219,34 +217,9 @@
 			<!-- /container -->
 
 			<!-- favorites -->
-			<div class="popup">
-				<div class="popup__body">
-					<div class="popup__content">
-						<p v-if="!favorites.length"><strong>В избранном нет товаров</strong> </p>
-						<div v-else class="favorite-list">
-							<div v-for="product of favorites" :key="product.id_product" :data-id="product.id_product">
-								<div class="card" style="width: 18rem; margin: 5px;">
-									<img :src="imgCatalog" class="card-img-top" alt="Some img">
-									<div class="card-body">
-										<h5 class="card-title">{{product.product_name}}</h5>
-										<p class="card-text">{{product.price}} &#8381</p>
-										<div class="favorite-btns">
-											<a @click="addProduct(product)" class="btn btn-info btn-sm">Купить</a>
-											<a @click="removeFavorite(product)"
-												class="btn btn-danger btn-sm">Удалить</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-						<button @click="showFavorites" type="button" class="btn btn-info"
-							style="margin: 5px 5px 5px 10px;">Закрыть
-							избранное</button>
-					</div>
-
-				</div>
-			</div>
+			<favorites class="popup" :favorites="favorites" :img="imgCatalog" v-on:add-product="addProduct"
+				v-on:remove-favorite="removeFavorite" v-on:show-favorite="showFavorites">
+			</favorites>
 			<!-- favorites -->
 	</div>
 	<!-- /top footer -->
@@ -278,6 +251,11 @@
 
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="js/SearchComponent.js"></script>
+	<script src="js/CartComponent.js"></script>
+	<script src="js/ProductComponent.js"></script>
+	<script src="js/GetDataErrorComponent.js"></script>
+	<script src="js/FavoriteComponent.js"></script>
 	<script src="js/main.js"></script>
 
 </body>
