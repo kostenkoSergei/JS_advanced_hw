@@ -1,0 +1,34 @@
+{
+    "amount": 46600,
+    "countGoods": 2,
+    "contents": [
+        {
+            "id_product": 124,
+            "product_name": "Series 5 50-M1000s Mint",
+            "price": 11600,
+            "img": "50-M1000s_Mint.jpg",
+            "quantity": 8
+        },
+        {
+            "id_product": 457,
+            "product_name": "Series 5 50-R1000s Red",
+            "price": 13000,
+            "img": "50-M1000s_Red.jpg",
+            "quantity": 5
+        },
+        {
+            "id_product": 123,
+            "product_name": "Series 7 70-S1000s Silver",
+            "price": 15600,
+            "img": "70-S1000s_Silver.jpg",
+            "quantity": 6
+        },
+        {
+            "id_product": 456,
+            "product_name": "Series 8 8345s",
+            "price": 11000,
+            "img": "8345s.jpg",
+            "quantity": 4
+        }
+    ]
+}
