@@ -27,21 +27,71 @@ const app = new Vue({
                     this.dataError = true;
                 })
         },
-        addProduct(product) {
-            this.getJson(`${API}/addToBasket.json`)
-                .then(data => {
-                    if (data.result === 1) {
-                        let productId = product.id_product;
-                        let find = this.basket.find(product => product.id_product === productId);
-                        if (find) {
-                            find.quantity++;
-                        } else {
-                            let basketProduct = Object.assign({ quantity: 1 }, product);
-                            this.basket.push(basketProduct);
+        //без использования бэкенда
+        // addProduct(product) {
+        //     this.getJson(`${API}/addToBasket.json`)
+        //         .then(data => {
+        //             if (data.result === 1) {
+        //                 let productId = product.id_product;
+        //                 let find = this.basket.find(product => product.id_product === productId);
+        //                 if (find) {
+        //                     find.quantity++;
+        //                 } else {
+        //                     let basketProduct = Object.assign({ quantity: 1 }, product);
+        //                     this.basket.push(basketProduct);
+        //                 }
+        //             } else {
+        //                 alert('Error');
+        //             }
+        //         })
+        // },
+
+        //с использованием бэкенда
+        addProduct(item) {
+            let find = this.basket.find(el => el.id_product === item.id_product);
+            if (find) {
+                this.putJson(`/api/cart/${find.id_product}`, { quantity: 1 })
+                    .then(data => {
+                        if (data.result === 1) {
+                            find.quantity++
                         }
-                    } else {
-                        alert('Error');
-                    }
+                    })
+            } else {
+                let basketProduct = Object.assign({ quantity: 1 }, item);
+                this.basket.push(basketProduct);
+                // const prod = Object.assign({ quantity: 1 }, item);
+                // this.postJson(`/api/cart`, prod)
+                //     .then(data => {
+                //         if (data.result === 1) {
+                //             this.basket.push(prod)
+                //         }
+                //     })
+            }
+        },
+        postJson(url, data) {
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(result => result.json())
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        putJson(url, data) {
+            return fetch(url, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(result => result.json())
+                .catch(error => {
+                    console.log(error)
                 })
         },
         addFavorite(product) {
@@ -54,7 +104,6 @@ const app = new Vue({
 
         },
         removeProduct(product) {
-            console.log('hi')
             this.getJson(`${API}/deleteFromBasket.json`)
                 .then(data => {
                     if (data.result === 1) {

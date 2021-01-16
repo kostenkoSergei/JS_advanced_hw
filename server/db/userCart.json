@@ -7,14 +7,14 @@
             "product_name": "Series 5 50-M1000s Mint",
             "price": 11600,
             "img": "50-M1000s_Mint.jpg",
-            "quantity": 5
+            "quantity": 8
         },
         {
             "id_product": 457,
             "product_name": "Series 5 50-R1000s Red",
             "price": 13000,
             "img": "50-M1000s_Red.jpg",
-            "quantity": 10
+            "quantity": 5
         },
         {
             "id_product": 123,
@@ -28,7 +28,7 @@
             "product_name": "Series 8 8345s",
             "price": 11000,
             "img": "8345s.jpg",
-            "quantity": 2
+            "quantity": 4
         }
     ]
 }
