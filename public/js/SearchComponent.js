@@ -1,5 +1,5 @@
 // Компонент для поиска товара в каталоге ============================
-Vue.component('product-search', {
+const search = {
     data() {
         return {
             searchValue: ''
@@ -15,5 +15,6 @@ Vue.component('product-search', {
     </div>
 </div>
     `
-});
+};
 //====================================================================
+export default search

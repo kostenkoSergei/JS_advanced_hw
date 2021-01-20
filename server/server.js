@@ -4,7 +4,7 @@ const app = express();
 const cart = require('./cartRouter');
 
 app.use(express.json());
-app.use('/', express.static('public'));
+app.use('/', express.static('dist'));
 app.use('/api/cart', cart);
 
 

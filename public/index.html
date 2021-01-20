@@ -20,7 +20,7 @@
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 
 	<!-- Custom stlylesheet -->
-	<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<!-- <link type="text/css" rel="stylesheet" href="css/style.css" /> -->
 </head>
 
 <body>
@@ -60,7 +60,7 @@
 						<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
-						<product-search v-on:product-search="filter">Поиск</product-search>
+						<search v-on:product-search="filter">Поиск</search>
 						<!-- /SEARCH BAR -->
 
 						<!-- ACCOUNT -->
@@ -134,7 +134,7 @@
 					</div>
 
 					<!-- if server is unreachable -->
-					<error-data v-if='dataError'></error-data>
+					<error v-if='dataError'></error>
 					<!-- if server is unreachable -->
 
 					<!-- geekbrains product -->
@@ -216,9 +216,9 @@
 			<!-- /container -->
 
 			<!-- favorites -->
-			<favorites class="popup" :favorites="favorites" v-on:add-product="addProduct"
+			<favorite class="popup" :favorites="favorites" v-on:add-product="addProduct"
 				v-on:remove-favorite="removeFavorite" v-on:show-favorite="showFavorites">
-			</favorites>
+			</favorite>
 			<!-- favorites -->
 	</div>
 
@@ -251,12 +251,12 @@
 
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="js/SearchComponent.js"></script>
+	<!-- <script src="js/SearchComponent.js"></script>
 	<script src="js/CartComponent.js"></script>
 	<script src="js/ProductComponent.js"></script>
 	<script src="js/GetDataErrorComponent.js"></script>
 	<script src="js/FavoriteComponent.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/main.js"></script> -->
 
 </body>
 

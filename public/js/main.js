@@ -1,6 +1,13 @@
+import search from './SearchComponent.js';
+import basket from './CartComponent.js';
+import products from './ProductComponent.js';
+import error from './GetDataErrorComponent.js';
+import favorite from './FavoriteComponent.js';
+
+import '../css/style.css';
 
 
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+//const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
 const app = new Vue({
     el: '#app',
@@ -14,9 +21,17 @@ const app = new Vue({
         userEmail: '',
         placeholder: 'Введите Вашу почту',
         isError: false,
-        dataError: false
+        dataError: false,
+        API: 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses'
 
 
+    },
+    components: {
+        search,
+        basket,
+        products,
+        error,
+        favorite
     },
     methods: {
         getJson(url) {
@@ -104,7 +119,7 @@ const app = new Vue({
 
         },
         removeProduct(product) {
-            this.getJson(`${API}/deleteFromBasket.json`)
+            this.getJson(`${this.API}/deleteFromBasket.json`)
                 .then(data => {
                     if (data.result === 1) {
                         let productId = product.id_product;
