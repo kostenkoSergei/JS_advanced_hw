@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Интернет-магазин</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<!-- <link type="text/css" rel="stylesheet" href="css/style.css" /> -->
+</head>
+
+<body>
+	<div id="app">
+		<!-- HEADER -->
+		<header>
+			<!-- TOP HEADER -->
+			<div id="top-header">
+				<div class="container">
+					<ul class="header-links pull-left">
+						<li><a href="#"><i class="fa fa-phone"></i> +7921-388-69-96</a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i> s_kostenko@mail.ru</a></li>
+						<li><a href="#"><i class="fa fa-map-marker"></i> Санкт-Петербург 163170</a></li>
+					</ul>
+					<ul class="header-links pull-right">
+						<li><a href="#"><i class="fa fa-rub"></i> RUB</a></li>
+						<li><a href="#"><i class="fa fa-user-o"></i> Личный кабинет</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /TOP HEADER -->
+
+			<!-- MAIN HEADER -->
+			<div id="header">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<!-- LOGO -->
+						<div class="col-md-3">
+							<div class="header-logo">
+								<a href="#" class="logo">
+									<img src="./img/112.png" alt="">
+								</a>
+							</div>
+						</div>
+						<!-- /LOGO -->
+
+						<!-- SEARCH BAR -->
+						<search v-on:product-search="filter">Поиск</search>
+						<!-- /SEARCH BAR -->
+
+						<!-- ACCOUNT -->
+						<div class="col-md-3 clearfix">
+							<div class="header-ctn">
+								<!-- Wishlist -->
+								<div>
+									<a @click="showFavorites">
+										<i class="fa fa-heart-o"></i>
+										<span class="fa-text">Избранное</span>
+									</a>
+								</div>
+								<!-- /Wishlist -->
+
+								<!-- Cart -->
+								<div>
+									<a @click="showBasket">
+										<i class="fa fa-shopping-cart"></i>
+										<span class="fa-text">Корзина</span>
+									</a>
+									<div class="cart">
+										<div class="cart-dropdown invisible">
+											<basket :basket="basket" v-on:remove-product="removeProduct">
+											</basket>
+										</div>
+									</div>
+								</div>
+								<!-- /Cart -->
+
+							</div>
+							<!-- /ACCOUNT -->
+						</div>
+						<!-- row -->
+					</div>
+					<!-- container -->
+				</div>
+				<!-- /MAIN HEADER -->
+		</header>
+		<!-- /HEADER -->
+
+		<!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
+		<!-- /NAVIGATION -->
+
+
+		<!-- Section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-12">
+						<div class="section-title text-center">
+							<h3 class="title">Каталог</h3>
+						</div>
+					</div>
+
+					<!-- if server is unreachable -->
+					<error v-if='dataError'></error>
+					<!-- if server is unreachable -->
+
+					<!-- geekbrains product -->
+					<products class="products" :products="products" v-on:add-product="addProduct"
+						v-on:add-favorite="addFavorite">
+					</products>
+					<!-- geekbrains product -->
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /Section -->
+
+		<!-- HOT DEAL SECTION -->
+		<div id="hot-deal" class="section" style="background-image: url('../img/hotdeal.png');">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="hot-deal">
+							<ul class="hot-deal-countdown">
+								<li>
+									<div>
+										<h3>02</h3>
+										<span>дн.</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>10</h3>
+										<span>час.</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>34</h3>
+										<span>мин.</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>60</h3>
+										<span>сек.</span>
+									</div>
+								</li>
+							</ul>
+							<h2 class="text-uppercase">горячие предложения недели</h2>
+							<p>Скидки до 50%</p>
+							<a class="primary-btn cta-btn" href="#">К покупкам</a>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /HOT DEAL SECTION -->
+
+		<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="newsletter">
+							<p>Подпишись на <strong>Рассылку</strong></p>
+							<form>
+								<input :class="{error: isError}" class="input" type="email" :placeholder="placeholder"
+									v-model="userEmail">
+								<button class="newsletter-btn" @click="checkEmail"><i class="fa fa-envelope"></i>
+									Подписаться</button>
+							</form>
+							<ul class="newsletter-follow">
+								<li>
+									<a href="#"><i class="fa fa-facebook"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-twitter"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-instagram"></i></a>
+								</li>
+								<li>
+									<a href="#"><i class="fa fa-pinterest"></i></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /NEWSLETTER -->
+
+		<!-- FOOTER -->
+		<footer id="footer">
+			<!-- top footer -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="footer-info">
+							<div class="footer">
+								<h3 class="footer-title">О нас</h3>
+								<p style="color: white;">Страница интернет-магазина является домашним заданием к 7 уроку
+									курса Продвинутый JS
+									GeekBrains</p>
+								<ul class="footer-links">
+									<li><a href="#"><i class="fa fa-phone"></i> +7921-388-69-96</a></li>
+									<li><a href="#"><i class="fa fa-envelope-o"></i> s_kostenko@mail.ru</a></li>
+									<li><a href="#"><i class="fa fa-map-marker"></i> Санкт-Петербург 163170</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+
+			<!-- favorites -->
+			<favorite class="popup" :favorites="favorites" v-on:add-product="addProduct"
+				v-on:remove-favorite="removeFavorite" v-on:show-favorite="showFavorites">
+			</favorite>
+			<!-- favorites -->
+	</div>
+
+	<!-- /top footer -->
+
+	<!-- bottom footer -->
+	<div id="bottom-footer" class="section">
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<ul class="footer-payments">
+						<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+						<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+						<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+					</ul>
+					<span class="copyright">
+						Copyright &copy;
+						<script>document.write(new Date().getFullYear());</script> Все права защищены
+					</span>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /bottom footer -->
+	</footer>
+	<!-- /FOOTER -->
+
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<!-- <script src="js/SearchComponent.js"></script>
+	<script src="js/CartComponent.js"></script>
+	<script src="js/ProductComponent.js"></script>
+	<script src="js/GetDataErrorComponent.js"></script>
+	<script src="js/FavoriteComponent.js"></script>
+	<script src="js/main.js"></script> -->
+
+</body>
+
+</html>
