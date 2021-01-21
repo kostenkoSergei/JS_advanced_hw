@@ -14,14 +14,14 @@
             "product_name": "Series 5 50-R1000s Red",
             "price": 13000,
             "img": "50-M1000s_Red.jpg",
-            "quantity": 11
+            "quantity": 16
         },
         {
             "id_product": 123,
             "product_name": "Series 7 70-S1000s Silver",
             "price": 15600,
             "img": "70-S1000s_Silver.jpg",
-            "quantity": 19
+            "quantity": 20
         },
         {
             "id_product": 456,
